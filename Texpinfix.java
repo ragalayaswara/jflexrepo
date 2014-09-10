@@ -4,7 +4,7 @@ import java.util.*;
 /**
  * AST node for infix expressions
  */ 
-class Texpinfix extends Texp implements AST {
+class Texpinfix extends Texp implements AST { //creates AST for infix expressions;ex: a+b
   Texp exp1, exp2;            
   String kind;                  
   static ArrayList<ArrayList<String>> useVars = new ArrayList<ArrayList<String>>();
