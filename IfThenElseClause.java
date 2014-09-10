@@ -5,7 +5,7 @@ class IfThenElseClause extends Texp implements AST {
   Tboolexp boolexp;           
   String kind;                  
 
-  public IfThenElseClause(Tboolexp e1, Texp e2, Texp e3) {
+  public IfThenElseClause(Tboolexp e1, Texp e2, Texp e3) { //This constructor keeps a counter of all exit variables in a exit table index
     Tprogram.LV_Exit_Table_index.remove(Tprogram.counter -1);
     Tprogram.LV_Exit_Table_index.remove(Tprogram.counter -2);
     Tprogram.counter=Tprogram.counter-2;
