@@ -71,7 +71,7 @@ public ArrayList<String> eliminateKill(ArrayList<String> LiveVar, String killVar
   return removeVars;
 }
 
-public ArrayList<String> unionGen(ArrayList<String> removeVars, ArrayList<String> UseList)
+public ArrayList<String> unionGen(ArrayList<String> removeVars, ArrayList<String> UseList)  //creates a union of all gens
 {
     ArrayList<String> LV = new ArrayList<String>(UseList);
     SymbolTable st = new SymbolTable();
@@ -199,7 +199,7 @@ public void createLVTables()
    }}
 }
 
-  public void printLVEntryExit()        //prints LV equations according to the formula for calculating live variables
+  public void printLVEntryExit()        //prints LV equations according to the formula for calculating live variables(equations in README file)
   {
     System.out.println("\nLive variable equations are as follows");
     for(int ind=0;ind<LV_exit.size();ind++)
