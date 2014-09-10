@@ -103,7 +103,7 @@ public ArrayList<String> unionGen(ArrayList<String> removeVars, ArrayList<String
 public ArrayList<ArrayList<String>> storeLV()
 {
    LiveVariables.add(new ArrayList<String>());
-   LiveVariables.get(0).add("\u03a6");
+   LiveVariables.get(0).add("\u03a6");  //representation of phi char for an empty set
    for(int i=(Defs.size() - 1);i>=0;i--)
    {      
       ArrayList<String> temp = eliminateKill(LiveVariables.get(Defs.size()-1-i),Defs.get(i));
