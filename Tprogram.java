@@ -12,8 +12,8 @@ static ArrayList<ArrayList<String>> LiveVariables = new ArrayList<ArrayList<Stri
 static int counter=0;
 static ArrayList<ArrayList<Integer>> LV_Exit_Table_index= new ArrayList<ArrayList<Integer>>();
 
-ArrayList<ArrayList<String>> LV_exit=new ArrayList<ArrayList<String>>();
-ArrayList<ArrayList<String>> LV_entry=new ArrayList<ArrayList<String>>();
+ArrayList<ArrayList<String>> LV_exit=new ArrayList<ArrayList<String>>();   //live variables at exit
+ArrayList<ArrayList<String>> LV_entry=new ArrayList<ArrayList<String>>();  //Live variables at entry
 
 int key=0;
 
@@ -29,7 +29,7 @@ int key=0;
   SymbolTable inputs;
 
   public void setSymtabs() {
-   parlist.setSymtab();
+   parlist.setSymtab();                    //prints all the symbols in the input code. For ex: variable names
    parlist.printSymtab();
    
   }
@@ -39,17 +39,17 @@ int key=0;
    
    Defs=assignstmt.computeDefVars();
    for(int i =0; i<Defs.size();i++)
-   System.out.println("Kills[Assignment_stmt "+i+"]: "+Defs.get(i));
+   System.out.println("Kills[Assignment_stmt "+i+"]: "+Defs.get(i));  //computes the kill variables
   return Defs;
  }
 
- public ArrayList<ArrayList<String>> setUseVars(){
- Texpinfix infix = new Texpinfix();
+ public ArrayList<ArrayList<String>> setUseVars(){                
+ Texpinfix infix = new Texpinfix();   
  
  use=infix.computeUseVars();
  for(int i =0; i<use.size();i++){
    System.out.println();
-   System.out.print("Gens[Assignment_stmt "+i+"] "+": ");
+   System.out.print("Gens[Assignment_stmt "+i+"] "+": ");                //computes the gen variables
    for(int j=0;j<((ArrayList)use.get(i)).size(); j++){
    System.out.print(use.get(i).get(j)+ " ");}}
   return use;
@@ -199,7 +199,7 @@ public void createLVTables()
    }}
 }
 
-  public void printLVEntryExit()
+  public void printLVEntryExit()        //prints LV equations according to the formula for calculating live variables
   {
     System.out.println("\nLive variable equations are as follows");
     for(int ind=0;ind<LV_exit.size();ind++)
