@@ -11,6 +11,9 @@ Gen (b)  : {variables used before a redefinition in B}
 In(B) = (Out(B) - Kill(B)) U Gen(B)
 
 Main.java- consists of the function call to build the symbol table and abstract syntax tree.
+
 Tprogram.java-Consists of logic to calculate the Kills and Gens in the sample input and creating the LV equations
+
 Texpinfix.java, IfThenElseClause.java- these files sample files which show the processing on infix and if then clause expressions to calculate the live variables.
+
 SymbolTable.java- Gives the list of symbols in the input.
