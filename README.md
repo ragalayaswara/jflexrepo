@@ -22,3 +22,6 @@ Tboolexp.java- The class which parses boolean expressions
 
 IfThenElseClause.java- The class which parses if else conditions and also updates the LV entry and exit in front and rear of the if else block.
 
+my_cup.cup- Contains the grammar for the language
+my_jflex.flex-Contains the lexical symbols for the grammar
+sym.java and parser.java- these files are generated from the cup and flex files and used to generate the abstract syntax tree 
