@@ -1,0 +1,191 @@
+/* Import the class java_cup.runtime.*  */
+import java_cup.runtime.*;
+   
+/* Parser code to change the way the parser reports errors (include
+   line and column number of the error). */
+parser code {:
+    
+    /* Change the method report_error so it will display the line and
+       column of where the error occurred in the input as well as the
+       reason for the error which is passed into the method in the
+       String 'message'. */
+    public void report_error(String message, Object info) {
+   
+        /* Create a StringBuffer called 'm' with the string 'Error' in it. */
+        StringBuffer m = new StringBuffer("Error");
+   
+        /* Check if the information passed to the method is the same
+           type as the type java_cup.runtime.Symbol. */
+        if (info instanceof java_cup.runtime.Symbol) {
+            /* Declare a java_cup.runtime.Symbol object 's' with the
+               information in the object info that is being typecasted
+               as a java_cup.runtime.Symbol object. */
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+   
+            /* Check if the line number in the input is greater or
+               equal to zero. */
+            if (s.left >= 0) {                
+                /* Add to the end of the StringBuffer error message
+                   the line number of the error in the input. */
+                m.append(" in line "+(s.left+1));   
+                /* Check if the column number in the input is greater
+                   or equal to zero. */
+                if (s.right >= 0)                    
+                    /* Add to the end of the StringBuffer error message
+                       the column number of the error in the input. */
+                    m.append(", column "+(s.right+1));
+            }
+        }
+   
+        /* Add to the end of the StringBuffer error message created in
+           this method the message that was passed into this method. */
+        m.append(" : "+message);
+   
+        /* Print the contents of the StringBuffer 'm', which contains
+           an error message, out on a line. */
+        System.err.println(m);
+    }
+
+ 
+    /* Change the method report_fatal_error so when it reports a fatal
+       error it will display the line and column number of where the
+       fatal error occurred in the input as well as the reason for the
+       fatal error which is passed into the method in the object
+       'message' and then exit.*/
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+        System.exit(1);
+    }
+:};
+
+//Terminals (tokens returned by the scanner). 
+
+terminal           SEMI, PLUS, MINUS, TIMES, DIVIDE;
+terminal           UMINUS, RPAREN, LPAREN, LBRACK, RBRACK; 
+terminal           FUNCTION;
+terminal Integer   NUMBER;
+terminal           COMMA, WHILE, DO;
+terminal           ELSE, IF, THEN;
+terminal           AND, OR, NOT;
+terminal           GEQ, LEQ, NEQ, EQ, IS; 
+terminal           BOOLEAN, STRING;
+terminal           INT, LESS, GRAT;
+terminal String    ID;
+
+/* Non-terminals */
+non terminal 		Tprogram program;
+non terminal            Tparlist par_list;
+non terminal            Type type;
+non terminal            Texplist expr_list;
+non terminal            Texp expr;
+non terminal            Tnumber number;
+non terminal  		Tboolexp boolexpr;
+non terminal 		Tident ident;
+
+
+/* Precedences */
+precedence left RBRACK, LBRACK, RPAREN, LPAREN, SEMI, COMMA;
+precedence left NOT, OR, AND, WHILE, DO;
+precedence left PLUS, MINUS, TIMES, DIVIDE;
+precedence left LESS, LEQ, GRAT,GEQ, NEQ, EQ;
+precedence left IS;
+precedence left UMINUS;
+
+/* The grammar */
+program   ::= par_list:p SEMI expr_list:l 
+	      {: RESULT = new Tprogram(p,l); :}
+              ;
+
+par_list  ::= type:t ident:i
+	      {: RESULT = new Tparlist(t,i); :}
+              | 
+              par_list:p COMMA type:t ident:i
+              {: RESULT = new Tparlist(p,t,i); :}
+              ;
+
+type      ::= BOOLEAN
+              {: RESULT = new TypeBool(); :}
+              |
+              INT
+              {: RESULT = new TypeInt(); :}
+              |
+              STRING
+              {: RESULT = new TypeStr(); :}
+              ;
+ 
+expr_list ::= expr:e 
+	      {: RESULT = new Texplist(e); :}
+	      |
+	      expr_list:l expr:e
+	      {: RESULT = new Texplist(l,e); :}
+	    
+              ;
+
+expr       ::= LPAREN expr:l PLUS expr:r RPAREN SEMI
+	      {: RESULT = new Texpinfix(l,"+",r); :} 
+	      | 
+              LPAREN expr:e1 MINUS expr:e2 RPAREN SEMI
+              {: RESULT = new Texpinfix(e1,"-",e2); :} 
+	      | 
+              LPAREN expr:e1 TIMES expr:e2 RPAREN SEMI
+	      {: RESULT = new Texpinfix(e1,"*",e2); :} 
+	      | 
+              LPAREN expr:e1 DIVIDE expr:e2 RPAREN SEMI
+	      {: RESULT = new Texpinfix(e1,"/",e2); :} 
+	      | 
+	      ident:i 
+	      {: RESULT = i;  :}
+	      |
+	      ident:i1 IS ident:i2 SEMI 
+	      {: RESULT = new Tassign(i1, "=", i2) ;  :}
+	      |
+	      number:n 
+	      {: RESULT = n;   :}
+	      |
+	      ident:i IS number:n SEMI
+	      {: RESULT = new Tassign(i, "=", n);   :}
+	      |
+	      ident:i IS expr:e
+	      {: RESULT = new Tassign(i,"=",e); :}
+              |
+              LPAREN expr:e RPAREN     
+	      {: RESULT = e; :} 
+              |
+	      IF boolexpr:e1 THEN expr:e2 ELSE expr:e3 
+	      {: RESULT = new IfThenElseClause(e1,e2,e3); :}
+              |
+	      FUNCTION ID:i LPAREN par_list:p RPAREN LBRACK expr_list:e RBRACK
+              {: /*RESULT = new Tfunction(i,p,e);*/ :}
+              |
+              WHILE boolexpr:b1 DO expr:e1
+              {: RESULT = new Twhile(b1,e1); :}
+	      ;
+
+boolexpr   ::= expr:e1 LESS expr:e2
+               {: RESULT = new Tboolexp(e1,"<",e2); :}
+               |
+               expr:e1 GRAT expr:e2
+               {: RESULT = new Tboolexp(e1,">",e2); :}
+               |
+               expr:e1 GEQ expr:e2
+               {: RESULT = new Tboolexp(e1,">=",e2); :}
+               |
+               expr:e1 LEQ expr:e2
+               {: RESULT = new Tboolexp(e1,"<=",e2); :}
+               |
+               expr:e1 NEQ expr:e2
+               {: RESULT = new Tboolexp(e1,"!=",e2);:}
+               |
+               expr:e1 EQ expr:e2
+               {: RESULT = new Tboolexp(e1,"==",e2); :}
+	       ;
+
+ident      ::= ID:i
+               {: RESULT = new Tident(i); :}
+		;
+
+number     ::= NUMBER:z
+	       {: RESULT = new Tnumber(z); :}
+		;
+
+
