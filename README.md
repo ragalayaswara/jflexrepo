@@ -25,3 +25,8 @@ IfThenElseClause.java- The class which parses if else conditions and also update
 my_cup.cup- Contains the grammar for the language
 my_jflex.flex-Contains the lexical symbols for the grammar
 sym.java and parser.java- these files are generated from the cup and flex files and used to generate the abstract syntax tree 
+
+My contribution in the above project is as follows:
+-Grammar for some expressions
+-Parsing if else and while loop conditions and creating the abstract syntax tree
+-Doing the live variable analysis for assignment, infix expressions and if else blocks and printing the equations.
